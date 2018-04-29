@@ -1,47 +1,18 @@
-// Karma configuration
-// Generated on Mon Apr 30 2018 01:24:27 GMT+0400 (Кавказское время (зима))
+// Karma watch configuration used in development
+
+var commonKarmConf = require('./karma.common');
 
 module.exports = function(config) {
-  config.set({
-
-    // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
-
-
-    // frameworks to use
-    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
-
-
-    // list of files / patterns to load in the browser
-    files: [
-      'node_modules/angular/angular.js',
-      'node_modules/angular-mocks/angular-mocks.js',
-      'src/**/*.js',
-      'spec/**/*.js'
-    ],
-
-
-    // list of files / patterns to exclude
-    exclude: [
-    ],
-
-
+  var watchConfig = {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    preprocessors: {
-    },
+    preprocessors: {},
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
-
-
-    // web server port
-    port: 9876,
-
+    reporters: ['spec'],
 
     // enable / disable colors in the output (reporters and logs)
     colors: true,
@@ -63,10 +34,8 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
-
-    // Concurrency level
-    // how many browser should be started simultaneous
-    concurrency: Infinity
-  })
-}
+    singleRun: false
+  };
+  var finalConfig = Object.assign({}, commonKarmConf, watchConfig);
+  config.set(finalConfig);
+};
