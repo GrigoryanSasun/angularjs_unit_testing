@@ -14,6 +14,7 @@ module.exports = {
     // list of files / patterns to load in the browser
     files: [
         'node_modules/angular/angular.js',
+        'node_modules/angular-cookies/angular-cookies.js',
         'node_modules/angular-mocks/angular-mocks.js',
         'src/**/*.js',
         'spec/**/*.js'

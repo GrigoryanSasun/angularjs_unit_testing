@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "angular": "1.4.14",
+    "angular-cookies": "1.4.14",
     "angular-mocks": "1.4.14"
   }
 }
