@@ -1,7 +1,4 @@
-angular.module('ExampleModule', ['ngCookies'])
-    .run(function () {
-        window.jQuery = jasmine.createSpyObj('jQuery', ['param']);
-    })
+angular.module('ExampleModule', [])
     .factory('SpringControllerService', ['$http', '$cookies', '$q', '$timeout', function ($http, $cookies, $q, $timeout) {
         var headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
