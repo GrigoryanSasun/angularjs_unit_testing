@@ -154,8 +154,9 @@ describe('SpringControllerService', function () {
                 });
             });
 
-            describe('and when call succeeds', function () {
+            describe('and http request sent', function () {
                 var $httpBackend;
+
                 beforeEach(function () {
                     $timeout = jasmine.createSpyObj('timeoutSpy', ['cancel']);
                     module('ExampleModule', {
@@ -170,74 +171,119 @@ describe('SpringControllerService', function () {
                     });
                 });
 
-                it('should reject with null if non-object is returned', function () {
-                    $httpBackend.expect('GET', url)
-                        .respond(200, 'non-object');
-                    springCtrlService.get(url, null, null)
-                        .then(function () {
-                            throw new Error('Should not resolve')
-                        })
-                        .catch(function (err) {
-                            expect(err).toBeNull();
-                        });
-                    $httpBackend.flush();
+                afterEach(function () {
+                    expect($timeout.cancel).toHaveBeenCalled();
                 });
 
-                it('should resolve with result data if data property exists', function () {
-                    var data = 'data';
+                describe('when call succeeds', function () {
 
-                    $httpBackend.expect('GET', url)
-                        .respond(200, {
-                            data: data
-                        });
+                    it('should reject with null if non-object is returned', function () {
+                        $httpBackend.expect('GET', url)
+                            .respond(200, 'non-object');
+                        springCtrlService.get(url, null, null)
+                            .then(function () {
+                                throw new Error('Should not resolve')
+                            })
+                            .catch(function (err) {
+                                expect(err).toBeNull();
+                            });
+                        $httpBackend.flush();
+                    });
 
-                    springCtrlService.get(url, null, null)
-                        .then(function (resolvedData) {
-                            expect(resolvedData).toEqual(data);
-                        })
-                        .catch(function(err) {
-                            throw new Error('should not fail');
-                        });
-                    $httpBackend.flush();
+                    it('should resolve with result data if data property exists', function () {
+                        var data = 'data';
 
+                        $httpBackend.expect('GET', url)
+                            .respond(200, {
+                                data: data
+                            });
+
+                        springCtrlService.get(url, null, null)
+                            .then(function (resolvedData) {
+                                expect(resolvedData).toEqual(data);
+                            })
+                            .catch(function (err) {
+                                throw new Error('should not fail');
+                            });
+                        $httpBackend.flush();
+
+                    });
+
+
+                    it('should reject with result error if error property exists', function () {
+                        var error = 'error';
+
+                        $httpBackend.expect('GET', url)
+                            .respond(200, {
+                                error: error
+                            });
+
+                        springCtrlService.get(url, null, null)
+                            .then(function () {
+                                throw new Error('should not resolve');
+                            })
+                            .catch(function (rejectedError) {
+                                expect(rejectedError).toEqual(error);
+                            });
+                        $httpBackend.flush();
+                    });
+
+                    it('should resolve with result if data property does not exist and there is no error', function () {
+                        var data = {
+                            backendData: 'backendData'
+                        };
+
+                        $httpBackend.expect('GET', url)
+                            .respond(200, data);
+
+                        springCtrlService.get(url, null, null)
+                            .then(function (resolvedData) {
+                                expect(resolvedData).toEqual(data);
+                            })
+                            .catch(function (err) {
+                                throw new Error('should not fail');
+                            });
+                        $httpBackend.flush();
+
+                    });
                 });
 
+                describe('when call fails', function () {
+                    it('should reject with response message if message property exists', function () {
+                        var data = {
+                            message: 'errorMessage'
+                        };
 
-                it('should reject with result error if error property exists', function () {
-                    var error = 'error';
+                        $httpBackend.expect('GET', url)
+                            .respond(400, data);
 
-                    $httpBackend.expect('GET', url)
-                        .respond(200, {
-                            error: error
-                        });
+                        springCtrlService.get(url, null, null)
+                            .then(function (resolvedData) {
+                                throw new Error('should not succeed');
+                            })
+                            .catch(function (err) {
+                                expect(err).toBe(data.message);
+                            });
+                        $httpBackend.flush();
+                    });
 
-                    springCtrlService.get(url, null, null)
-                        .then(function() {
-                            throw new Error('should not resolve');
-                        })
-                        .catch(function (rejectedError) {
-                            expect(rejectedError).toEqual(error);
-                        });
-                    $httpBackend.flush();
-                });
+                    it('should reject with response if message property DOES NOT exist', function () {
+                        var data = {
+                            error: 'error'
+                        };
 
-                it('should resolve with result if data property does not exist and there is no error', function () {
-                    var data = {
-                        backendData: 'backendData'   
-                    };
+                        $httpBackend.expect('GET', url)
+                            .respond(400, data);
 
-                    $httpBackend.expect('GET', url)
-                        .respond(200, data);
-
-                    springCtrlService.get(url, null, null)
-                        .then(function (resolvedData) {
-                            expect(resolvedData).toEqual(data);
-                        })
-                        .catch(function(err) {
-                            throw new Error('should not fail');
-                        });
-                    $httpBackend.flush();
-
+                        springCtrlService.get(url, null, null)
+                            .then(function (resolvedData) {
+                                throw new Error('should not succeed');
+                            })
+                            .catch(function (err) {
+                                expect(err).toEqual(data);
+                            });
+                        $httpBackend.flush();
+                    });
                 });
             });
         });
