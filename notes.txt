@@ -1,0 +1,5 @@
+1. controller unit testing
+use $controller service, pass controller name, and the injected services
+2. directive unit testing
+use $compile('diretive tags')(rootscope) - returns jqelement
+call rootscope digest
